@@ -1,11 +1,11 @@
-@(userForm: Form[Application.LibratoUser])
+@(userForm: Form[services.LibratoUser])
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Login", None) {
-  @form(action = routes.Application.authenticate) {
+@main("Login") {
+  @form(action = routes.Login.authenticate) {
     @inputText(userForm("username"))
     @inputPassword(userForm("password"))
     <input type="submit">
   }
-}
+}(None)

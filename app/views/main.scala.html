@@ -1,4 +1,4 @@
-@(title: String, username: Option[String])(content: Html)
+@(title: String)(content: Html)(implicit userInfo: Option[services.LibratoUser])
 
 <!DOCTYPE html>
 
@@ -21,14 +21,9 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          @*<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">*@
-            @*<span class="icon-bar"></span>*@
-            @*<span class="icon-bar"></span>*@
-            @*<span class="icon-bar"></span>*@
-          @*</a>*@
           <a class="brand" href="#">Attribrato</a>
           <div class="nav-collapse collapse pull-right">
-            @username
+            @userInfo.getOrElse(services.LibratoUser("Log In", "")).username
           </div>
         </div>
       </div>

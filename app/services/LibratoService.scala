@@ -11,9 +11,7 @@ import play.api.libs.concurrent.Promise
 /**
  * @author Naaman Newbold
  */
-class PlayAppLibratoService(un: String, pw: String)
-  extends LibratoService {
-
+class PlayAppLibratoService(libratoUser: LibratoUser) extends LibratoService {
   def client = new LibratoClient {
     def config = new LibratoConfig {
       import play.api.Play.current
@@ -22,15 +20,19 @@ class PlayAppLibratoService(un: String, pw: String)
         .getString("librato.host")
         .getOrElse("metrics-api.librato.com")
 
-      val username = un
-      val password = pw
+      val username = libratoUser.username
+      val password = libratoUser.password
     }
   }
 
+  def user = libratoUser
 }
+
+case class LibratoUser(username: String, password: String)
 
 trait LibratoService {
   def client: LibratoClient
+  def user: LibratoUser
 
   def getMetrics: Promise[Map[String, Any]] = client.exec(new MetricList)
 }
