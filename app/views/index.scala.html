@@ -1,7 +1,7 @@
 @(message: String)(implicit userInfo: Option[services.LibratoUser])
 
 @main("Attribrato") {
-  <div class="row" id="metrics-table-container">
+  <div id="metrics-table-container">
   </div>
 
   <script id="metrics-table-template" type="text/html">
@@ -23,18 +23,15 @@
 
   <style type="text/css">
       div.dataTables_length label {
-          width: 460px;
           float: left;
           text-align: left;
       }
 
       div.dataTables_length select {
-          width: 75px;
       }
 
       div.dataTables_filter label {
           float: right;
-          width: 460px;
       }
 
       div.dataTables_info {
@@ -47,9 +44,23 @@
       }
 
       table {
-          margin: 1em 0;
+      margin-bottom: 6px !important;
           clear: both;
       }
+      table.table thead .sorting,
+      table.table thead .sorting_asc,
+      table.table thead .sorting_desc,
+      table.table thead .sorting_asc_disabled,
+      table.table thead .sorting_desc_disabled {
+          cursor: pointer;
+          *cursor: hand;
+      }
+
+      /*table.table thead .sorting { background: url('images/sort_both.png') no-repeat center right; }*/
+      /*table.table thead .sorting_asc { background: url('images/sort_asc.png') no-repeat center right; }*/
+      /*table.table thead .sorting_desc { background: url('images/sort_desc.png') no-repeat center right; }*/
+      /*table.table thead .sorting_asc_disabled { background: url('images/sort_asc_disabled.png') no-repeat center right; }*/
+      /*table.table thead .sorting_desc_disabled { background: url('images/sort_desc_disabled.png') no-repeat center right; }*/
   </style>
 
   <script type="text/javascript">
@@ -58,8 +69,9 @@
       $.get('/api/v1/metrics', function(data) {
         $("#metrics-table-container").mustache("metrics-table-template", data);
         $('#metrics-table').dataTable({
-          "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
-          "sPaginationType": "bootstrap"
+          "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+          "sPaginationType": "bootstrap",
+          "sWrapper": "dataTables_wrapper form-inline"
         });
       }, "json");
     });
