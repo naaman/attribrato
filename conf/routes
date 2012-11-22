@@ -2,10 +2,13 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# UI
 GET    /                            controllers.Application.index
 GET    /login                       controllers.Login.login
 POST   /authenticate                controllers.Login.authenticate
 
-# Map static resources from the /public folder to the /assets URL path
+# JSON API
+GET    /api/v1/metrics              controllers.Librato.metrics
+
+# Static resources
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
