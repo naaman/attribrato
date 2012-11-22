@@ -9,6 +9,7 @@ POST   /authenticate                controllers.Login.authenticate
 
 # JSON API
 GET    /api/v1/metrics              controllers.Librato.metrics
+GET    /api/v1/allMetrics           controllers.Librato.allMetrics
 
 # Static resources
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

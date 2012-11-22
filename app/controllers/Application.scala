@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import services.{LibratoUser, RequestFailedException, PlayAppLibratoService, LibratoService}
+import services.{LibratoUser, RequestFailedException, PlayAppLibratoService}
 import play.api.libs.concurrent.Promise
 import play.api.data._
 import play.api.data.Forms._
@@ -20,6 +20,10 @@ object Librato extends Controller {
 
   def metrics = LibratoAuthenticated { librato => implicit lu => request =>
     librato.getMetrics.map(Json.generate(_)).map(Ok(_))
+  }
+
+  def allMetrics = LibratoAuthenticated { l => implicit lu => req =>
+    l.getAllMetrics.map(Json.generate(_)).map(Ok(_))
   }
 }
 
@@ -59,7 +63,7 @@ object Login extends Controller {
       .await(5L, TimeUnit.SECONDS)
       .get
 
-  protected def success = (result: Map[String, Any]) => true
+  protected def success = (result: Any) => true
 
   protected def recoverAuth: PartialFunction[Throwable, Boolean] = {
     case e: RequestFailedException if (e.getStatus == UNAUTHORIZED) => false

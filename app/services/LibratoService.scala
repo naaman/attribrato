@@ -34,7 +34,29 @@ trait LibratoService {
   def client: LibratoClient
   def user: LibratoUser
 
-  def getMetrics: Promise[Map[String, Any]] = client.exec(new MetricList)
+  def getMetrics: Promise[MetricQuery] = client.exec(new MetricList(100))
+
+  def getAllMetrics = {
+    val batch = 100
+
+    def metricSlices(total: Int): Seq[(Int, Int)] = {
+      val batches = for (i <- 0 to (total / batch - 1)) yield (i * 100, batch)
+      if (total % batch == 0) batches
+      else batches :+ ((total / batch) * batch -> total % batch)
+    }
+
+    def execBatches = (batches: Seq[(Int, Int)]) => batches.map {
+      case (offset, total) => client.exec(new MetricList(total, offset))
+    }
+
+    def sequenceBatches(batches: Seq[(Int, Int)]) = Promise.sequence(execBatches(batches))
+
+    client.exec(new MetricList(1))
+      .map(_.query("total"))
+      .map(metricSlices(_))
+      .flatMap(sequenceBatches(_))
+      .map(_.map(_.metrics).flatten)
+  }
 }
 
 trait LibratoRequest[T] {
@@ -76,12 +98,14 @@ trait LibratoClient {
   }
 }
 
-class MetricList extends LibratoRequest[Map[String, Any]] {
+case class MetricQuery(query: Map[String, Int], metrics: Seq[Map[String, Any]])
+
+class MetricList(length: Int, offset: Int = 0) extends LibratoRequest[MetricQuery] {
   def method = HttpMethod.GET
-  def path = "/metrics"
+  def path = "/metrics?length=" + length + "&offset=" + offset
   def body = None
   def respond(status: Int, data: Array[Byte]) = {
-    if (status == Status.OK) Json.parse[Map[String, Any]](data)
+    if (status == Status.OK) Json.parse[MetricQuery](data)
     else throw new RequestFailedException(status, data)
   }
 }
