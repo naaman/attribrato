@@ -5,7 +5,7 @@
   </div>
 
   <script id="metrics-table-template" type="text/html">
-    <table class="table table-striped">
+    <table class="table table-striped" id="metrics-table">
         <thead>
             <th>&nbsp;</th>
             <th>Metric</th>
@@ -57,7 +57,7 @@
       $.Mustache.addFromDom("metrics-table-template");
       $.get('/api/v1/metrics', function(data) {
         $("#metrics-table-container").mustache("metrics-table-template", data);
-        $('#metrics-table-container table').dataTable({
+        $('#metrics-table').dataTable({
           "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
           "sPaginationType": "bootstrap"
         });
