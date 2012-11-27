@@ -3,7 +3,9 @@
 # ~~~~
 
 # UI
-GET    /                            controllers.Application.index
+GET    /metrics                     controllers.Application.index
+POST   /metrics/attrs/edit          controllers.Application.editMetricsAttributes
+POST   /metrics/attrs/save          controllers.Application.saveMetricsAttributes
 GET    /login                       controllers.Login.login
 POST   /authenticate                controllers.Login.authenticate
 

@@ -1,37 +1,41 @@
-@(message: String)(implicit userInfo: Option[services.LibratoUser])
+@(metrics: Seq[services.LibratoMetric])(implicit userInfo: Option[services.LibratoUser])
+
+@import helper._
+@import helper.twitterBootstrap._
 
 @main("Attribrato") {
   <div id="metrics-table-container">
+    @form(action = routes.Application.editMetricsAttributes) {
+      <table class="table table-striped" id="metrics-table">
+          <thead>
+              <th>&nbsp;</th>
+              <th>Metric</th>
+              <th>Display Units</th>
+          </thead>
+          <tbody>
+              @for(metric <- metrics) {
+                <tr>
+                  <td><input type="checkbox" name="metric" value="@metric.name"></td>
+                  <td>@metric.name</td>
+                  <td>@metric.attributes.displayUnitsLong.getOrElse("")</td>
+                </tr>
+              }
+          </tbody>
+          <tfoot>
+              <td colspan="3"><input type="submit" class="btn" id="edit-attributes" value="Edit Attributes"></td>
+          </tfoot>
+      </table>
+    }
   </div>
-
-  <script id="metrics-table-template" type="text/html">
-    <table class="table table-striped" id="metrics-table">
-        <thead>
-            <th>&nbsp;</th>
-            <th>Metric</th>
-        </thead>
-        <tbody>
-            {{#metrics}}
-              <tr>
-                <td><input type="checkbox" name="metric" value="{{name}}"></td>
-                <td>{{name}}</td>
-              </tr>
-            {{/metrics}}
-        </tbody>
-    </table>
-  </script>
 
   <script type="text/javascript">
     $(window).load(function() {
-      $.Mustache.addFromDom("metrics-table-template");
-      $.get('/api/v1/allMetrics', function(data) {
-        $("#metrics-table-container").mustache("metrics-table-template", {"metrics":data});
-        $('#metrics-table').dataTable({
-          "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-          "sPaginationType": "bootstrap",
-          "sWrapper": "dataTables_wrapper form-inline"
-        });
-      }, "json");
+      $('#metrics-table').dataTable({
+        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        "sPaginationType": "scrolling",
+        "bPaginate": false,
+        "sWrapper": "dataTables_wrapper form-inline"
+      });
     });
   </script>
 

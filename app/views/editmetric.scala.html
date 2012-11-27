@@ -1,0 +1,30 @@
+@(metrics: Seq[services.LibratoMetric], attributesForm: Form[services.MetricAttributes])(implicit userInfo: Option[services.LibratoUser])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Edit Metrics") {
+    <div class="row">
+        <div class="span5 well well-small">
+            <h3>Selected Metrics</h3>
+            @for(metric <- metrics) {
+                @metric.name<br/>
+            }
+        </div>
+        <div class="span6">
+        @form(action = routes.Application.saveMetricsAttributes) {
+            @for(metric <- metrics) {
+                <input type="hidden" name="metric" value="@metric.name">
+            }
+            @inputText(attributesForm("color"), '_label -> "Color")
+            @inputText(attributesForm("displayMax"), '_label -> "Max")
+            @inputText(attributesForm("displayMin"), '_label -> "Min")
+            @inputText(attributesForm("displayUnitsLong"), '_label -> "Units (y-axis)")
+            @inputText(attributesForm("displayUnitsShort"), '_label -> "Abbreviated Units")
+            @checkbox(attributesForm("displayStacked"), '_label -> "Stacked")
+            @inputText(attributesForm("displayTransform"), '_label -> "Transformation")
+            <input type="submit" class="btn btn-primary" value="Save">
+        }
+        </div>
+    </div>
+}
