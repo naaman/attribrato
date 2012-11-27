@@ -5,8 +5,15 @@
 
 @main("Login") {
   @form(action = routes.Login.authenticate) {
-    @inputText(userForm("username"))
-    @inputPassword(userForm("password"))
+    @if(userForm.hasGlobalErrors) {
+        @for(error <- userForm.globalErrors) {
+          <div class="alert alert-error">
+              @error.message
+          </div>
+        }
+    }
+    @inputText(userForm("username"), '_label -> "Librato Username", '_help -> "")
+    @inputPassword(userForm("password"), '_label -> "Api Key", '_help -> "")
     <input type="submit">
   }
 }(None)

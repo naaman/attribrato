@@ -105,7 +105,7 @@ object Login extends Controller {
     (LibratoUser.apply)
     (LibratoUser.unapply)
     verifying(
-      "Invalid username or password.",
+      "Invalid username or api key.",
       validateLogin
     )
   )
